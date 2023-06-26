@@ -32,12 +32,10 @@ const getUserbyID = (req, res) => {
 const createUser = (req, res) => {
     const { name, email } = req.body;
     
-    pool.query('INSERT INTO users (name, email) ' + 
-        'VALUES ($1, $2) ' + 
-        'RETURNING *', [name, email], (error, results) => {
-            if (error) throw error;
-            res.status(201).send(`User added with ID: ${results.rpws[0].id}`)
-        })
+    pool.query('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email], (error, results) => {
+        if (error) throw error;
+        res.status(201).send(`User added with ID: ${results.rows[0].id}`)
+    })
 };
 
 // PUT updated data into existing user
@@ -47,7 +45,7 @@ const updateUser = (req, res) => {
 
     pool.query('UPDATE users SET name=$1, email=$2 WHERE id=$3', [name, email, id], (error, results) => {
         if (error) throw error;
-        response.status(200).send(`User modified with ID: ${id}`);
+        res.status(200).send(`User modified with ID: ${id}`);
     })
 };
 
@@ -57,7 +55,15 @@ const deleteUser = (req, res) => {
 
     pool.query('DELETE FROM users WHERE id=$1', [id], (error, results) => {
         if (error) throw error;
-        response.status(200).send(`User deleted with ID: ${id}`);
+        res.status(200).send(`User deleted with ID: ${id}`);
+    })
+};
+
+// DELETE all users
+const deleteAllUsers = (req, res) => {
+    pool.query('DELETE FROM users', (error, results) => {
+        if (error) throw error;
+        res.status(200).send('All users deleted');
     })
 };
 
@@ -68,4 +74,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    deleteAllUsers,
 }
