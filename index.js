@@ -12,6 +12,9 @@ app.use(
     })
 );
 
+const usersRouter = require('./routes/users');
+app.use('/users', usersRouter);
+
 app.get('/', (req, res) => {
     res.json({ info: 'Node.js, Express, and Postgres API' })
 });
